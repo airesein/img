@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>说明文档 - 图片公链存储 API</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset & Variables (Consistent with main page) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-color: #5e72e4; /* 主色调 */
+            --accent-color: #42a5f5; /* 强调色 */
+            --light-color: #ffffff; /* 亮色 */
+            --text-color: #344767; /* 主要文本 */
+            --text-light: #7b809a; /* 辅助文本 */
+            --glass-bg: rgba(255, 255, 255, 0.6); /* 玻璃背景 */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.7); /* 玻璃边框 */
+            --shadow: 0 8px 26px -4px rgba(0, 0, 0, 0.15); /* 柔和阴影 */
+            --code-bg: rgba(0, 0, 0, 0.05); /* 代码块背景 */
+            --code-border: 1px solid rgba(0, 0, 0, 0.1); /* 代码块边框 */
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+
+            /* **背景图片设置** */
+            background-image: url('https://t.ziworld.top/api?'); /* 使用提供的API作为背景图片 */
+            background-size: cover; /* 覆盖整个背景区域 */
+            background-position: center center; /* 图片居中 */
+            background-attachment: fixed; /* 背景图片固定，不随滚动条滚动 */
+            background-repeat: no-repeat; /* 不重复 */
+            
+            /* **背景图片遮罩层** */
+            position: relative; /* 允许 ::before 伪元素相对于 body 定位 */
+        }
+
+        body::before {
+            content: '';
+            position: fixed; /* 固定在视口 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* 半透明黑色遮罩 */
+            z-index: -1; /* 确保在内容下方 */
+        }
+
+        .doc-container {
+            max-width: 900px; /* 与主站面板宽度保持一致 */
+            width: 100%;
+            margin: 30px auto;
+            padding: 30px;
+            /* Glassmorphism Card Style */
+            background: var(--glass-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: fadeIn 0.6s ease-out forwards;
+            position: relative; /* 确保内容在遮罩上方 */
+            z-index: 1; 
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-weight: 700;
+            position: relative;
+        }
+
+        h1:after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 5px;
+        }
+
+        p {
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            color: var(--text-color);
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        ul li {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            color: var(--text-color);
+        }
+        
+        strong {
+            color: var(--primary-color);
+        }
+
+        code {
+            display: block;
+            background-color: var(--code-bg);
+            border: var(--code-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap; /* 保持换行和空格 */
+            word-break: break-all; /* 防止长链接溢出 */
+            overflow-x: auto; /* 横向滚动，防止溢出 */
+        }
+
+        .note {
+            background-color: rgba(255, 193, 7, 0.1);
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #d68f00;
+        }
+
+        .note i {
+            margin-right: 10px;
+            color: #e0a800;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            width: 100%;
+            margin-top: auto;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .doc-container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+            h1 { font-size: 2rem; margin-bottom: 20px; }
+            h2 { font-size: 1.5rem; margin-top: 25px; }
+            p, ul li { font-size: 0.95rem; }
+            code { font-size: 0.85rem; padding: 10px; }
+            .note { padding: 10px; font-size: 0.9rem; }
+            footer { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="doc-container">
+        <h1>说明文档</h1>
+        <h2>开源地址:<a href="https://github.com/airesein/ImagesGallery">https://github.com/airesein/ImagesGallery</a></h2>
+        <h2>图片交互</h2>
+        <ul>
+            <li><strong>鼠标左键单击图片:</strong> 可进行图片预览（在大图模式下，再次单击大图或按ESC键可退出预览）。</li>
+            <li><strong>鼠标右键单击图片:</strong> 复制该图片的公链地址到剪贴板。</li>
+        </ul>
+
+        <h2>随机图片 API 调用方式</h2>
+        <p>API 地址：<code>https://t.ziworld.top/api</code></p>
+
+        <h3>1. 随机获取单个分类图片</h3>
+        <p>通过在 URL 中添加 <code>category</code> 参数指定单个分类名称。</p>
+        <p>示例：</p>
+        <code>https://t.ziworld.top/api?category=原神</code>
+
+        <h3>2. 随机获取多个分类图片</h3>
+        <p>通过在 URL 中使用逗号 <code>,</code> 分隔多个分类名称。</p>
+        <p>示例：</p>
+        <code>https://t.ziworld.top/api?category=原神,PC,二次元</code>
+
+        <h3>3. 不指定分类</h3>
+        <p>如果 URL 中不包含 <code>category</code> 或 <code>apicategory</code> 参数，将使用默认的 <strong>PC</strong> 分类随机获取图片。</p>
+        <p>示例：</p>
+        <code>https://t.ziworld.top/api?</code>
+
+        <div class="note">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p><strong>重要提示：</strong> 为了避免 URL 解析问题，特别是分类名称中包含特殊字符（如中文、空格等），强烈建议使用 **URL 编码** 的形式传入分类参数。</p>
+            <p>此时，请使用 <code>apicategory</code> 作为参数名，而不是 <code>category</code></p>
+            <p><strong>示例：</strong> <code>原神</code> 经过 URL 编码后为 <code>%E5%8E%9F%E7%A5%9E</code></p>
+            <code>https://t.ziworld.top/api?apicategory=%E5%8E%9F%E7%A5%9E</code>
+        </div>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year"></span> 图片公链存储 | All Rights Reserved | Powered by Ziworld</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 动态更新页脚年份
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
